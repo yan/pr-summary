@@ -1,0 +1,50 @@
+# 🟣 PR #9: Add web browser for viewing PR summaries in git notes
+
+## Metadata
+
+- **Author:** @yan
+- **Base:** `main` ← **Head:** `yan/notes-browser`
+- **Created:** 2025-10-17 18:07:21 UTC
+- **Merged:** 2025-10-17 18:07:36 UTC by @yan
+- **Participants:** @Yan Ivnitskiy, @yan
+- **URL:** https://github.com/yan/pr-summary/pull/9
+
+## Description
+
+Introduces notes_browser, a Flask-based web application that provides a GitHub-style interface for browsing PR summaries stored in git notes.
+
+Features:
+- List view of all commits with PR summary notes
+- Detailed view with formatted markdown rendering
+- Code comment display with file context from commits
+- Support for multiple git notes refs
+- GitHub-style dark theme UI
+- Author linking and @mention support
+
+This complements the pr-summary action by making the stored PR data easily accessible and browsable without requiring git CLI commands.
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+## Commits (1)
+
+- [`c23a9f2`](https://github.com/yan/pr-summary/commit/c23a9f23bb730377df6d89c372dc03e26d29273f) Add web browser for viewing PR summaries in git notes - @Yan Ivnitskiy
+
+## File Changes (2)
+
+**Total changes:** +1335 -0
+
+### Added (2)
+
+- `notes_browser/notes_browser.py` (+1333)
+- `notes_browser/requirements.txt` (+2)
+
+## Checks (2)
+
+### Other (2)
+
+- 🔵 [test (3.12)](https://github.com/yan/pr-summary/actions/runs/18601029455/job/53039255241) [GitHub Actions]
+- 🔵 [test (3.11)](https://github.com/yan/pr-summary/actions/runs/18601029455/job/53039255230) [GitHub Actions]
+
+---
+
+*Summary generated for PR #9 • 1 commits • 0 comments • 0 reviews • 2 checks • 2 files changed*
