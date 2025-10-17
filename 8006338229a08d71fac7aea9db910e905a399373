@@ -1,0 +1,43 @@
+# 🟣 PR #4: Enable pr-summary on this repo
+
+## Metadata
+
+- **Author:** @yan
+- **Base:** `main` ← **Head:** `enable-pr-summary`
+- **Created:** 2025-10-17 01:51:59 UTC
+- **Merged:** 2025-10-17 01:52:15 UTC by @yan
+- **Participants:** @yan
+- **URL:** https://github.com/yan/pr-summary/pull/4
+
+## Description
+
+## Summary
+- Adds pr-summary workflow to use the action on this repository itself
+- Demonstrates the action's functionality by using it on its own PRs
+
+This PR enables the pr-summary action to run on merged PRs in this repository, storing comprehensive PR summaries as git notes.
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+## Commits (1)
+
+- [`80c5810`](https://github.com/yan/pr-summary/commit/80c5810893e383628d66d4a445427a30a7b23f92) Add pr-summary workflow to use the action on this repo - @yan
+
+## File Changes (1)
+
+**Total changes:** +25 -0
+
+### Added (1)
+
+- `.github/workflows/pr-summary.yml` (+25)
+
+## Checks (2)
+
+### Other (2)
+
+- 🔵 [test (3.12)](https://github.com/yan/pr-summary/actions/runs/18579961069/job/52972723880) [GitHub Actions]
+- 🔵 [test (3.11)](https://github.com/yan/pr-summary/actions/runs/18579961069/job/52972723871) [GitHub Actions]
+
+---
+
+*Summary generated for PR #4 • 1 commits • 0 comments • 0 reviews • 2 checks • 1 files changed*
