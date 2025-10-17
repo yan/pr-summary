@@ -165,7 +165,8 @@ class GitNotesManager:
         try:
             self._run_git_command(cmd)
         except GitNotesError as e:
-            if "no note found" in str(e).lower():
+            # Git can return either "no note found" or "has no note"
+            if "no note" in str(e).lower():
                 logger.warning(f"No note to remove for {commit_sha[:7]}")
             else:
                 raise
