@@ -1,0 +1,16 @@
+# Development dependencies
+-r requirements.txt
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-mock>=3.11.1
+
+# Linting and formatting
+mypy>=1.5.0
+black>=23.7.0
+ruff>=0.0.285
+
+# Type stubs
+types-requests>=2.31.0
+types-python-dateutil>=2.8.19
