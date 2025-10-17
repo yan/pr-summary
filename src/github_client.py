@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 class GitHubAPIError(Exception):
     """Base exception for GitHub API errors."""
 
-    def __init__(self, message: str, status_code: Optional[int] = None, response: Optional[dict] = None):
+    def __init__(self, message: str, status_code: Optional[int] = None, response: Optional[dict[str, Any]] = None):
         super().__init__(message)
         self.status_code = status_code
         self.response = response
@@ -158,7 +158,8 @@ class GitHubClient:
             # Handle other errors
             response.raise_for_status()
 
-            return response.json()
+            result: dict[str, Any] = response.json()
+            return result
 
         except requests.exceptions.Timeout as e:
             raise GitHubAPIError(f"Request timeout after {self.timeout}s") from e
@@ -187,15 +188,20 @@ class GitHubClient:
 
         while True:
             logger.debug(f"Fetching page {params['page']} of {endpoint}")
-            results = self._make_request(endpoint, params)
+            response = self._make_request(endpoint, params)
 
-            if not results:
+            # Paginated endpoints return arrays - verify with isinstance
+            if not isinstance(response, list):
+                logger.error(f"Expected list from paginated endpoint {endpoint}, got {type(response)}")
                 break
 
-            all_results.extend(results)
+            if not response:
+                break
+
+            all_results.extend(response)
 
             # Check if there are more pages
-            if len(results) < params["per_page"]:
+            if len(response) < params["per_page"]:
                 break
 
             params["page"] += 1
@@ -297,7 +303,8 @@ class GitHubClient:
         """
         endpoint = f"/repos/{self.owner}/{self.repo}/commits/{ref}/check-runs"
         response = self._make_request(endpoint)
-        return response.get("check_runs", [])
+        check_runs: list[dict[str, Any]] = response.get("check_runs", [])
+        return check_runs
 
     def get_commit_status(self, ref: str) -> dict[str, Any]:
         """

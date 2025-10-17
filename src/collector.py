@@ -85,8 +85,8 @@ class PRActivityCollector:
             head_branch=pr_data["head"]["ref"],
             base_repo=pr_data["base"]["repo"]["full_name"],
             head_repo=pr_data["head"]["repo"]["full_name"] if pr_data["head"]["repo"] else "unknown",
-            created_at=self._parse_datetime(pr_data["created_at"]),
-            updated_at=self._parse_datetime(pr_data["updated_at"]),
+            created_at=self._parse_datetime_required(pr_data["created_at"], "created_at"),
+            updated_at=self._parse_datetime_required(pr_data["updated_at"], "updated_at"),
             closed_at=self._parse_datetime(pr_data.get("closed_at")),
             merged_at=self._parse_datetime(pr_data.get("merged_at")),
             merge_commit_sha=pr_data.get("merge_commit_sha"),
@@ -127,7 +127,7 @@ class PRActivityCollector:
                 message=commit_data["commit"]["message"],
                 author=commit_data["commit"]["author"]["name"],
                 author_email=commit_data["commit"]["author"]["email"],
-                timestamp=self._parse_datetime(commit_data["commit"]["author"]["date"]),
+                timestamp=self._parse_datetime_required(commit_data["commit"]["author"]["date"], "commit.author.date"),
                 url=commit_data["html_url"],
             )
             commits.append(commit)
@@ -163,7 +163,7 @@ class PRActivityCollector:
             comment = PRComment(
                 id=comment_data["id"],
                 author=comment_data["user"]["login"],
-                created_at=self._parse_datetime(comment_data["created_at"]),
+                created_at=self._parse_datetime_required(comment_data["created_at"], "comment.created_at"),
                 updated_at=self._parse_datetime(comment_data.get("updated_at")),
                 body=comment_data["body"],
                 comment_type="conversation",
@@ -177,7 +177,7 @@ class PRActivityCollector:
             comment = PRComment(
                 id=comment_data["id"],
                 author=comment_data["user"]["login"],
-                created_at=self._parse_datetime(comment_data["created_at"]),
+                created_at=self._parse_datetime_required(comment_data["created_at"], "comment.created_at"),
                 updated_at=self._parse_datetime(comment_data.get("updated_at")),
                 body=comment_data["body"],
                 comment_type="inline",
@@ -235,7 +235,7 @@ class PRActivityCollector:
                 name=check_data["name"],
                 status=check_data["status"],
                 conclusion=check_data.get("conclusion"),
-                started_at=self._parse_datetime(check_data["started_at"]),
+                started_at=self._parse_datetime_required(check_data["started_at"], "check_run.started_at"),
                 completed_at=self._parse_datetime(check_data.get("completed_at")),
                 html_url=check_data["html_url"],
                 app_name=check_data.get("app", {}).get("name"),
@@ -287,6 +287,28 @@ class PRActivityCollector:
         """
         if not dt_string:
             return None
+
+        # GitHub returns ISO 8601 with Z suffix
+        # Python 3.11+ can handle this natively
+        return datetime.fromisoformat(dt_string.replace("Z", "+00:00"))
+
+    @staticmethod
+    def _parse_datetime_required(dt_string: Optional[str], field_name: str = "datetime") -> datetime:
+        """
+        Parse required ISO 8601 datetime string from GitHub API.
+
+        Args:
+            dt_string: ISO 8601 datetime string
+            field_name: Name of the field for error messages
+
+        Returns:
+            Parsed datetime
+
+        Raises:
+            ValueError: If dt_string is None or empty
+        """
+        if not dt_string:
+            raise ValueError(f"Required {field_name} field is missing")
 
         # GitHub returns ISO 8601 with Z suffix
         # Python 3.11+ can handle this natively
