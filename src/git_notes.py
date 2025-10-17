@@ -252,8 +252,6 @@ class GitNotesManager:
         """
         Push notes to remote.
 
-        Fetches existing notes first to avoid conflicts, then pushes.
-
         Args:
             remote: Remote name
             force: Force push
@@ -262,14 +260,6 @@ class GitNotesManager:
             GitNotesError: If push fails
         """
         logger.info(f"Pushing notes to {remote}")
-
-        # Fetch existing notes first to avoid conflicts
-        try:
-            logger.debug(f"Fetching existing notes from {remote} before push")
-            self.fetch_notes(remote)
-        except GitNotesError as e:
-            # If fetch fails, log but continue - might be first push
-            logger.debug(f"Could not fetch notes (might not exist yet): {e}")
 
         cmd = ["git", "push"]
 

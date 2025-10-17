@@ -287,20 +287,12 @@ class TestPushNotes:
             mock_run.return_value = ""
             manager.push_notes(remote="origin")
 
-            # Verify both fetch and push commands were called
-            assert mock_run.call_count == 2
-
-            # First call should be fetch
-            fetch_args = mock_run.call_args_list[0][0][0]
-            assert "fetch" in fetch_args
-            assert "origin" in fetch_args
-            assert "refs/notes/pr-summary:refs/notes/pr-summary" in fetch_args
-
-            # Second call should be push
-            push_args = mock_run.call_args_list[1][0][0]
-            assert "push" in push_args
-            assert "origin" in push_args
-            assert "refs/notes/pr-summary" in push_args
+            # Verify git push command was called
+            mock_run.assert_called_once()
+            args = mock_run.call_args[0][0]
+            assert "push" in args
+            assert "origin" in args
+            assert "refs/notes/pr-summary" in args
 
 
 class TestFetchNotes:
