@@ -93,13 +93,17 @@ class GitHubClient:
         return session
 
     def _validate_auth(self) -> None:
-        """Validate authentication by making a test request."""
+        """Validate authentication by making a test request to the repository."""
         try:
-            response = self._make_request("/user")
-            logger.info(f"Authenticated as: {response.get('login', 'unknown')}")
+            # Use repository endpoint instead of /user since GitHub Actions tokens
+            # don't have access to user scope
+            response = self._make_request(f"/repos/{self.owner}/{self.repo}")
+            logger.info(f"Authenticated for repository: {response.get('full_name', 'unknown')}")
         except GitHubAPIError as e:
             if e.status_code == 401:
                 raise AuthenticationError("Invalid GitHub token") from e
+            if e.status_code == 404:
+                raise AuthenticationError(f"Repository not found or token lacks access: {self.owner}/{self.repo}") from e
             raise
 
     def _make_request(
