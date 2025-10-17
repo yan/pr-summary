@@ -1,0 +1,11 @@
+# PR Summary GitHub Action Dependencies
+
+# GitHub API client
+requests>=2.31.0
+
+# Date/time parsing
+python-dateutil>=2.8.2
+
+# Type hints for mypy (development)
+types-requests>=2.31.0
+types-python-dateutil>=2.8.19

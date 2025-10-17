@@ -1,0 +1,84 @@
+name: 'PR Summary to Git Notes'
+description: 'Captures comprehensive PR activity and stores it as git notes for historical preservation'
+author: 'Your Name'
+
+branding:
+  icon: 'file-text'
+  color: 'purple'
+
+inputs:
+  github-token:
+    description: 'GitHub token for API access'
+    required: true
+    default: ${{ github.token }}
+
+  pr-number:
+    description: 'Pull request number'
+    required: true
+
+  merge-commit-sha:
+    description: 'Merge commit SHA (auto-detected if not provided)'
+    required: false
+    default: ''
+
+  notes-ref:
+    description: 'Git notes reference'
+    required: false
+    default: 'refs/notes/pr-summary'
+
+  push-notes:
+    description: 'Whether to push notes to remote'
+    required: false
+    default: 'true'
+
+  log-level:
+    description: 'Logging level (DEBUG, INFO, WARNING, ERROR)'
+    required: false
+    default: 'INFO'
+
+outputs:
+  pr-number:
+    description: 'Pull request number'
+    value: ${{ steps.summarize.outputs.pr_number }}
+
+  commit-sha:
+    description: 'Commit SHA where note was attached'
+    value: ${{ steps.summarize.outputs.commit_sha }}
+
+  notes-ref:
+    description: 'Git notes reference used'
+    value: ${{ steps.summarize.outputs.notes_ref }}
+
+  summary-length:
+    description: 'Length of generated summary in characters'
+    value: ${{ steps.summarize.outputs.summary_length }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        pip install --quiet --upgrade pip
+        pip install --quiet -r ${{ github.action_path }}/requirements.txt
+
+    - name: Generate PR Summary
+      id: summarize
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        PR_NUMBER: ${{ inputs.pr-number }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        MERGE_COMMIT_SHA: ${{ inputs.merge-commit-sha }}
+        REPO_PATH: ${{ github.workspace }}
+        NOTES_REF: ${{ inputs.notes-ref }}
+        PUSH_NOTES: ${{ inputs.push-notes }}
+        LOG_LEVEL: ${{ inputs.log-level }}
+      run: |
+        cd ${{ github.action_path }}
+        python -m src.main

@@ -1,0 +1,57 @@
+# Example: Using pr-summary as a composite action
+# Place this file in .github/workflows/pr-summary.yml
+#
+# This approach uses the action.yml to make the action reusable
+
+name: PR Summary (Composite Action)
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write  # Required to push git notes
+  pull-requests: read  # Required to read PR data
+  checks: read  # Required to read check runs
+
+jobs:
+  summarize:
+    name: Create PR Summary
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history needed for git notes
+
+      # Option 1: Reference from same repository
+      - name: Generate PR Summary
+        uses: ./  # If pr-summary is in root of your repo
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pr-number: ${{ github.event.pull_request.number }}
+          merge-commit-sha: ${{ github.event.pull_request.merge_commit_sha }}
+          notes-ref: 'refs/notes/pr-summary'
+          push-notes: 'true'
+          log-level: 'INFO'
+
+      # Option 2: Reference from another repository (if published)
+      # - name: Generate PR Summary
+      #   uses: username/pr-summary@v1
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     pr-number: ${{ github.event.pull_request.number }}
+      #     merge-commit-sha: ${{ github.event.pull_request.merge_commit_sha }}
+
+      - name: Summary
+        if: success()
+        run: |
+          echo "✅ PR summary created successfully"
+          echo "📝 PR: #${{ github.event.pull_request.number }}"
+          echo "📝 Commit: ${{ github.event.pull_request.merge_commit_sha }}"
+          echo ""
+          echo "View notes locally:"
+          echo "  git fetch origin refs/notes/pr-summary:refs/notes/pr-summary"
+          echo "  git notes --ref=refs/notes/pr-summary show ${{ github.event.pull_request.merge_commit_sha }}"

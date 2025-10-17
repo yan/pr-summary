@@ -1,0 +1,57 @@
+# Example GitHub Actions Workflow
+# Place this file in .github/workflows/pr-summary.yml
+
+name: PR Summary to Git Notes
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write  # Required to push git notes
+  pull-requests: read  # Required to read PR data
+  checks: read  # Required to read check runs
+
+jobs:
+  summarize:
+    name: Create PR Summary
+    # Only run if PR was merged
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history needed for git notes
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Generate PR Summary
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          MERGE_COMMIT_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+          REPO_PATH: ${{ github.workspace }}
+          PUSH_NOTES: "true"
+          LOG_LEVEL: "INFO"
+        run: |
+          python -m src.main
+
+      - name: Summary
+        if: success()
+        run: |
+          echo "✅ PR summary created successfully for PR #${{ github.event.pull_request.number }}"
+          echo "📝 View notes: git fetch origin refs/notes/pr-summary:refs/notes/pr-summary"
+          echo "📝 Show note: git notes --ref=refs/notes/pr-summary show ${{ github.event.pull_request.merge_commit_sha }}"
