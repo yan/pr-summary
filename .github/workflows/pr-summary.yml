@@ -1,0 +1,25 @@
+name: PR Summary to Git Notes
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write
+  pull-requests: read
+  checks: read
+
+jobs:
+  summarize:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: yan/pr-summary@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pr-number: ${{ github.event.pull_request.number }}
+          merge-commit-sha: ${{ github.event.pull_request.merge_commit_sha }}
