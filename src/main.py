@@ -77,6 +77,14 @@ def main() -> int:
         # Configure git user for notes
         git_notes.configure_git_user()
 
+        # Fetch existing notes from remote first to avoid conflicts
+        logger.info(f"Fetching existing notes from {config['remote']}")
+        try:
+            git_notes.fetch_notes(remote=config["remote"])
+        except GitNotesError as e:
+            # Notes might not exist yet - that's ok for first PR
+            logger.info(f"Could not fetch existing notes (might be first PR): {e}")
+
         # Collect PR activity
         logger.info(f"Collecting activity for PR #{config['pr_number']}")
         activity = collector.collect_all_activity(config["pr_number"])
