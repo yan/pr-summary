@@ -22,13 +22,13 @@ class GitNotesError(Exception):
 class GitNotesManager:
     """Manages git notes for PR summaries."""
 
-    def __init__(self, repo_path: str = ".", notes_ref: str = "refs/notes/pr-summary"):
+    def __init__(self, repo_path: str = ".", notes_ref: str = "refs/notes/commits"):
         """
         Initialize git notes manager.
 
         Args:
             repo_path: Path to git repository
-            notes_ref: Git notes ref namespace (default: refs/notes/pr-summary)
+            notes_ref: Git notes ref namespace (default: refs/notes/commits)
         """
         self.repo_path = Path(repo_path).resolve()
         self.notes_ref = notes_ref

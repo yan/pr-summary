@@ -35,7 +35,7 @@ A GitHub Action that automatically captures comprehensive PR activity (comments,
 
 1. Add workflow file to `.github/workflows/pr-summary.yml`
 2. Merge a PR
-3. View the summary: `git notes --ref=refs/notes/pr-summary show <merge-commit-sha>`
+3. View the summary: `git notes --ref=refs/notes/commits show <merge-commit-sha>`
 
 ## Installation
 
@@ -87,7 +87,7 @@ You can customize the action with input parameters:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     pr-number: ${{ github.event.pull_request.number }}
     merge-commit-sha: ${{ github.event.pull_request.merge_commit_sha }}
-    notes-ref: 'refs/notes/pr-summary'  # Custom notes reference
+    notes-ref: 'refs/notes/commits'  # Custom notes reference
     push-notes: 'true'                   # Whether to push notes
     log-level: 'INFO'                    # Logging level
 ```
@@ -100,7 +100,7 @@ You can customize the action with input parameters:
 
 **Optional:**
 - `merge-commit-sha`: Merge commit SHA (auto-detected from PR if not provided)
-- `notes-ref`: Git notes reference (default: `refs/notes/pr-summary`)
+- `notes-ref`: Git notes reference (default: `refs/notes/commits`)
 - `push-notes`: Whether to push notes to remote (default: `true`)
 - `log-level`: Logging level - DEBUG, INFO, WARNING, ERROR (default: `INFO`)
 
@@ -135,31 +135,31 @@ python -m src.main
 ### Fetch Notes from Remote
 
 ```bash
-git fetch origin refs/notes/pr-summary:refs/notes/pr-summary
+git fetch origin refs/notes/commits:refs/notes/commits
 ```
 
 ### View Note for a Commit
 
 ```bash
-git notes --ref=refs/notes/pr-summary show <commit-sha>
+git notes --ref=refs/notes/commits show <commit-sha>
 ```
 
 ### View Note for Latest Merge Commit
 
 ```bash
-git notes --ref=refs/notes/pr-summary show HEAD
+git notes --ref=refs/notes/commits show HEAD
 ```
 
 ### List All Notes
 
 ```bash
-git notes --ref=refs/notes/pr-summary list
+git notes --ref=refs/notes/commits list
 ```
 
 ### Configure Git to Show Notes by Default
 
 ```bash
-git config notes.displayRef refs/notes/pr-summary
+git config notes.displayRef refs/notes/commits
 ```
 
 Now `git log` and `git show` will display notes automatically.
@@ -303,10 +303,10 @@ Contributions welcome! Please:
 
 ```bash
 # Make sure notes are fetched
-git fetch origin refs/notes/pr-summary:refs/notes/pr-summary
+git fetch origin refs/notes/commits:refs/notes/commits
 
 # Configure git to display notes
-git config --add notes.displayRef refs/notes/pr-summary
+git config --add notes.displayRef refs/notes/commits
 ```
 
 ### Permission Denied When Pushing

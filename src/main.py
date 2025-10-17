@@ -204,7 +204,7 @@ def get_configuration() -> dict[str, Any]:
     # Optional variables with defaults
     merge_commit_sha = get_env_var("MERGE_COMMIT_SHA", required=False, default=None)
     repo_path = get_env_var("REPO_PATH", required=False, default=".")
-    notes_ref = get_env_var("NOTES_REF", required=False, default="refs/notes/pr-summary")
+    notes_ref = get_env_var("NOTES_REF", required=False, default="refs/notes/commits")
     remote = get_env_var("REMOTE", required=False, default="origin")
 
     # Boolean flags
