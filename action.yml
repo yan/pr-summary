@@ -24,7 +24,7 @@ inputs:
   notes-ref:
     description: 'Git notes reference'
     required: false
-    default: 'refs/notes/pr-summary'
+    default: 'refs/notes/commits'
 
   push-notes:
     description: 'Whether to push notes to remote'

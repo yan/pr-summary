@@ -12,7 +12,7 @@ This document captures the design decisions, architecture, and development proce
 
 ### 1. Storage Strategy: Git Notes
 
-**Decision:** Use git notes (`refs/notes/pr-summary`) instead of:
+**Decision:** Use git notes (`refs/notes/commits`) instead of:
 - Modifying commit messages (irreversible, pollutes history)
 - Creating separate metadata files (clutters repository)
 
@@ -24,7 +24,7 @@ This document captures the design decisions, architecture, and development proce
 - Notes namespace prevents conflicts with other tools
 
 **Trade-offs:**
-- Requires explicit fetch: `git fetch origin refs/notes/pr-summary:refs/notes/pr-summary`
+- Requires explicit fetch: `git fetch origin refs/notes/commits:refs/notes/commits`
 - Less discoverable than commit messages
 - Not all git UIs display notes by default
 
@@ -149,7 +149,7 @@ main.py
 │                 │                  │                │
 └─────────────────┴──────────────────┴────────────────┘
          ↓                  ↓                 ↓
-    Pagination         PRActivity         refs/notes/pr-summary
+    Pagination         PRActivity         refs/notes/commits
     Rate Limits        Validation
     Retry Logic        Statistics
 ```
@@ -369,7 +369,7 @@ export MERGE_COMMIT_SHA="abc123..."
 .venv/bin/python -m src.main
 
 # View the note
-git notes --ref=refs/notes/pr-summary show abc123...
+git notes --ref=refs/notes/commits show abc123...
 ```
 
 ### Running Tests
@@ -402,7 +402,7 @@ cd ~/projects/pr-summary
 
 - `MERGE_COMMIT_SHA`: Merge commit SHA (auto-detected if not provided)
 - `REPO_PATH`: Path to git repository (default: ".")
-- `NOTES_REF`: Git notes reference (default: "refs/notes/pr-summary")
+- `NOTES_REF`: Git notes reference (default: "refs/notes/commits")
 - `REMOTE`: Git remote name (default: "origin")
 - `PUSH_NOTES`: Whether to push notes (default: "true")
 - `LOG_LEVEL`: Logging level (default: "INFO")

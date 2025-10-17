@@ -51,7 +51,7 @@ class TestGitNotesManagerInit:
         """Test initialization with valid git repository."""
         manager = GitNotesManager(repo_path=str(temp_git_repo))
         assert manager.repo_path == temp_git_repo
-        assert manager.notes_ref == "refs/notes/pr-summary"
+        assert manager.notes_ref == "refs/notes/commits"
 
     def test_init_custom_notes_ref(self, temp_git_repo):
         """Test initialization with custom notes ref."""
@@ -92,7 +92,7 @@ class TestAddNote:
 
         # Verify note was added
         result = subprocess.run(
-            ["git", "notes", "--ref", "refs/notes/pr-summary", "show", commit_sha],
+            ["git", "notes", "--ref", "refs/notes/commits", "show", commit_sha],
             cwd=temp_git_repo,
             check=True,
             capture_output=True,
@@ -121,7 +121,7 @@ class TestAddNote:
 
         # Verify note was overwritten
         result = subprocess.run(
-            ["git", "notes", "--ref", "refs/notes/pr-summary", "show", commit_sha],
+            ["git", "notes", "--ref", "refs/notes/commits", "show", commit_sha],
             cwd=temp_git_repo,
             check=True,
             capture_output=True,
@@ -292,7 +292,7 @@ class TestPushNotes:
             args = mock_run.call_args[0][0]
             assert "push" in args
             assert "origin" in args
-            assert "refs/notes/pr-summary" in args
+            assert "refs/notes/commits" in args
 
 
 class TestFetchNotes:

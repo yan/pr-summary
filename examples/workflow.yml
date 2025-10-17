@@ -53,5 +53,5 @@ jobs:
         if: success()
         run: |
           echo "✅ PR summary created successfully for PR #${{ github.event.pull_request.number }}"
-          echo "📝 View notes: git fetch origin refs/notes/pr-summary:refs/notes/pr-summary"
-          echo "📝 Show note: git notes --ref=refs/notes/pr-summary show ${{ github.event.pull_request.merge_commit_sha }}"
+          echo "📝 View notes: git fetch origin refs/notes/commits:refs/notes/commits"
+          echo "📝 Show note: git notes --ref=refs/notes/commits show ${{ github.event.pull_request.merge_commit_sha }}"

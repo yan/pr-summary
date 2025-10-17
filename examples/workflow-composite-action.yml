@@ -33,7 +33,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           pr-number: ${{ github.event.pull_request.number }}
           merge-commit-sha: ${{ github.event.pull_request.merge_commit_sha }}
-          notes-ref: 'refs/notes/pr-summary'
+          notes-ref: 'refs/notes/commits'
           push-notes: 'true'
           log-level: 'INFO'
 
@@ -53,5 +53,5 @@ jobs:
           echo "📝 Commit: ${{ github.event.pull_request.merge_commit_sha }}"
           echo ""
           echo "View notes locally:"
-          echo "  git fetch origin refs/notes/pr-summary:refs/notes/pr-summary"
-          echo "  git notes --ref=refs/notes/pr-summary show ${{ github.event.pull_request.merge_commit_sha }}"
+          echo "  git fetch origin refs/notes/commits:refs/notes/commits"
+          echo "  git notes --ref=refs/notes/commits show ${{ github.event.pull_request.merge_commit_sha }}"
