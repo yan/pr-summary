@@ -8,6 +8,7 @@ Collects PR activity from GitHub API and stores it as a git note.
 import logging
 import sys
 from pathlib import Path
+from typing import Any
 
 from .collector import PRActivityCollector
 from .formatter import SummaryFormatter
@@ -166,7 +167,7 @@ def main() -> int:
         return 1
 
 
-def get_configuration() -> dict[str, any]:
+def get_configuration() -> dict[str, Any]:
     """
     Get configuration from environment variables.
 
