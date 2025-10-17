@@ -1,0 +1,69 @@
+# 🟣 PR #8: Change default git notes reference to refs/notes/commits
+
+## Metadata
+
+- **Author:** @yan
+- **Base:** `main` ← **Head:** `change-notes-ref-to-commits`
+- **Created:** 2025-10-17 14:54:10 UTC
+- **Merged:** 2025-10-17 14:55:39 UTC by @yan
+- **Participants:** @yan
+- **URL:** https://github.com/yan/pr-summary/pull/8
+
+## Description
+
+## Summary
+
+- Changed default git notes reference from `refs/notes/pr-summary` to `refs/notes/commits` for a more generic and standard naming convention
+- Updated source code, configuration, documentation, examples, and tests
+- The `notes-ref` parameter remains fully configurable for users who want custom references
+
+## Changes
+
+- **Source code**: Updated defaults in `src/main.py` and `src/git_notes.py`
+- **Configuration**: Updated `action.yml` default input value
+- **Documentation**: Updated `README.md`, `CLAUDE.md`, and example workflows
+- **Tests**: Updated test assertions to reflect new default
+
+## Test plan
+
+- [x] All 100 tests pass with 79% code coverage
+- [x] Verified no remaining references to old default in codebase
+- [x] Configuration remains fully customizable via `notes-ref` input
+
+## Migration
+
+Users who have already used this action with the old default (`refs/notes/pr-summary`) can continue to use their existing notes by either:
+- Explicitly setting `notes-ref: 'refs/notes/pr-summary'` in their workflow
+- Or migrating their notes to the new reference with `git notes copy`
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+## Commits (1)
+
+- [`ca85455`](https://github.com/yan/pr-summary/commit/ca854554b3ed4674ef4275c803dc57b6f3aeb561) Change default git notes reference to refs/notes/commits - @yan
+
+## File Changes (8)
+
+**Total changes:** +28 -28
+
+### Modified (8)
+
+- `CLAUDE.md` (+5 -5)
+- `README.md` (+10 -10)
+- `action.yml` (+1 -1)
+- `examples/workflow-composite-action.yml` (+3 -3)
+- `examples/workflow.yml` (+2 -2)
+- `src/git_notes.py` (+2 -2)
+- `src/main.py` (+1 -1)
+- `tests/test_git_notes.py` (+4 -4)
+
+## Checks (2)
+
+### Other (2)
+
+- 🔵 [test (3.11)](https://github.com/yan/pr-summary/actions/runs/18596492314/job/53023964521) [GitHub Actions]
+- 🔵 [test (3.12)](https://github.com/yan/pr-summary/actions/runs/18596492314/job/53023964479) [GitHub Actions]
+
+---
+
+*Summary generated for PR #8 • 1 commits • 0 comments • 0 reviews • 2 checks • 8 files changed*
