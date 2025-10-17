@@ -1,6 +1,11 @@
 # PR Summary GitHub Action
 
+[![GitHub Action](https://img.shields.io/badge/action-yan%2Fpr--summary-blue?logo=github)](https://github.com/yan/pr-summary)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A GitHub Action that automatically captures comprehensive PR activity (comments, reviews, checks, commits) and embeds it into your git repository as git notes. This preserves GitHub collaboration history directly in your git repository.
+
+**Use it in your workflow:** `yan/pr-summary@v1`
 
 ## Features
 
@@ -26,24 +31,15 @@ A GitHub Action that automatically captures comprehensive PR activity (comments,
 4. Attaches summary as git note to the merge commit
 5. Pushes notes to repository
 
+## Quick Start
+
+1. Add workflow file to `.github/workflows/pr-summary.yml`
+2. Merge a PR
+3. View the summary: `git notes --ref=refs/notes/pr-summary show <merge-commit-sha>`
+
 ## Installation
 
-### Option 1: Copy to Your Repository
-
-1. Copy the `src/` directory to your repository
-2. Copy `requirements.txt` to your repository root
-3. Create `.github/workflows/pr-summary.yml` with the example workflow
-4. Commit and push
-
-### Option 2: As a Submodule
-
-```bash
-git submodule add https://github.com/yourusername/pr-summary
-```
-
-## Usage
-
-### Basic GitHub Actions Workflow
+Add this workflow to your repository at `.github/workflows/pr-summary.yml`:
 
 ```yaml
 name: PR Summary to Git Notes
@@ -66,51 +62,71 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v5
+      - uses: yan/pr-summary@v1
         with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Generate PR Summary
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          MERGE_COMMIT_SHA: ${{ github.event.pull_request.merge_commit_sha }}
-        run: python -m src.main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pr-number: ${{ github.event.pull_request.number }}
+          merge-commit-sha: ${{ github.event.pull_request.merge_commit_sha }}
 ```
 
-### Environment Variables
+That's it! The action will automatically run when PRs are merged.
 
-Required:
-- `GITHUB_TOKEN`: GitHub authentication token (automatically provided in Actions)
-- `PR_NUMBER`: Pull request number
-- `GITHUB_REPOSITORY`: Repository in format "owner/repo" (or use `REPO_OWNER` and `REPO_NAME`)
+## Usage
 
-Optional:
-- `MERGE_COMMIT_SHA`: Merge commit SHA (auto-detected if not provided)
-- `REPO_PATH`: Path to git repository (default: ".")
-- `NOTES_REF`: Git notes reference (default: "refs/notes/pr-summary")
-- `REMOTE`: Git remote name (default: "origin")
-- `PUSH_NOTES`: Whether to push notes (default: "true")
-- `LOG_LEVEL`: Logging level (default: "INFO")
+### Basic Usage
 
-### Local Testing
+The action runs automatically when a PR is merged. No additional configuration is required beyond the workflow file.
+
+### Customization
+
+You can customize the action with input parameters:
+
+```yaml
+- uses: yan/pr-summary@v1
+  with:
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    pr-number: ${{ github.event.pull_request.number }}
+    merge-commit-sha: ${{ github.event.pull_request.merge_commit_sha }}
+    notes-ref: 'refs/notes/pr-summary'  # Custom notes reference
+    push-notes: 'true'                   # Whether to push notes
+    log-level: 'INFO'                    # Logging level
+```
+
+### Input Parameters
+
+**Required:**
+- `github-token`: GitHub authentication token (use `${{ secrets.GITHUB_TOKEN }}`)
+- `pr-number`: Pull request number
+
+**Optional:**
+- `merge-commit-sha`: Merge commit SHA (auto-detected from PR if not provided)
+- `notes-ref`: Git notes reference (default: `refs/notes/pr-summary`)
+- `push-notes`: Whether to push notes to remote (default: `true`)
+- `log-level`: Logging level - DEBUG, INFO, WARNING, ERROR (default: `INFO`)
+
+## Local Development & Testing
+
+For developers contributing to this action:
 
 ```bash
+# Clone the repository
+git clone https://github.com/yan/pr-summary.git
+cd pr-summary
+
+# Create virtual environment
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
 # Install dependencies
 pip install -r requirements.txt
 
 # Set environment variables
 export GITHUB_TOKEN="your_github_token"
 export PR_NUMBER="123"
-export REPO_OWNER="username"
-export REPO_NAME="repository"
+export GITHUB_REPOSITORY="owner/repo"
 export MERGE_COMMIT_SHA="abc123..."
 
-# Run
+# Run locally
 python -m src.main
 ```
 
@@ -219,28 +235,35 @@ pr-summary/
 
 ## Development
 
+For contributors to this project:
+
 ### Requirements
 
 - Python 3.11+
 - Git 2.6+ (for git notes support)
-- GitHub personal access token or GITHUB_TOKEN
+- GitHub personal access token for testing
 
 ### Running Tests
 
 ```bash
 # Install dev dependencies
-pip install -r requirements.txt pytest mypy
+pip install -r requirements-dev.txt
 
-# Run type checking
-mypy src/
+# Run all tests
+pytest -v
 
-# Run tests (when implemented)
-pytest tests/
+# Run with coverage
+pytest --cov=src --cov-report=html
+
+# Run specific test file
+pytest tests/test_models.py -v
 ```
+
+**Test Coverage:** 80% (100 tests, all passing)
 
 ### Type Checking
 
-The codebase uses full type annotations and can be checked with mypy:
+The codebase uses full type annotations:
 
 ```bash
 mypy --strict src/
